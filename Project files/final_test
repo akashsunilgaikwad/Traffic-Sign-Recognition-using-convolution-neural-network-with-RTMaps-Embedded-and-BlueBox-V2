@@ -1,0 +1,207 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Thu Apr 12 17:59:58 2018
+
+@author: akash
+"""
+
+
+
+import cv2
+import os
+import matplotlib.pyplot as plt
+import matplotlib.image as mpimg
+import numpy as np 
+
+images = []
+images_orig = []
+folder = "new_images/"
+for image_name in os.listdir(folder):
+    #reading in an image and resize it
+    image = mpimg.imread(folder + image_name)
+    images_orig.append(image)
+    image = cv2.imread(folder + image_name,0)
+    image = cv2.resize(image, (32,32))
+#    image = image/255
+    images.append(image)
+    
+plt.figure(figsize=(15, 10))
+for i in range(len(images)):
+   # Displaying the images 
+    plt.subplot(2, len(images)/2, i+1)
+    plt.imshow(images_orig[i]) 
+    plt.title('image: ' + str(i))
+    plt.axis('off')
+
+
+# ### Predict the Sign Type for Each Image
+
+# In[53]:
+
+
+### Run the predictions here and use the model to output the prediction for each image.
+### Make sure to pre-process the images with the same pre-processing pipeline used earlier.
+import numpy as np
+import csv
+
+X_data = np.asarray(images)
+X_data = X_data.reshape((len(images),32,32,1))
+print ("New images after reshape: ", X_data.shape)
+
+signs=[]
+with open('signnames.csv', 'rt') as csvfile:
+    reader = csv.DictReader(csvfile, delimiter=',')
+    for row in reader:
+        signs.append((row['SignName']))
+        
+with tf.Session() as sess:
+    sess = tf.get_default_session()
+    tf.train.Saver().restore(sess, tf.train.latest_checkpoint('.'))
+    signs_classes = sess.run(tf.argmax(logits, 1), feed_dict={x: X_data})
+
+plt.figure(figsize=(15, 7))
+for i in range(len(images)):
+    plt.subplot(2, len(images)/2, i+1)
+    plt.imshow(images[i]) 
+    plt.title(signs[signs_classes[i]])
+    plt.axis('off')
+plt.show()
+
+
+# Here are the results of the prediction:
+# 
+# ![image.png](readme_img/predictions_table.jpg)
+
+# ### Analyze Performance
+
+# In[80]:
+
+
+### Calculate the accuracy for these 5 new images. 
+### For example, if the model predicted 1 out of 5 signs correctly, it's 20% accurate on these new images.
+import matplotlib.pyplot as plt
+#get_ipython().magic('matplotlib inline')
+
+y_actual =[14, 4, 21, 14, 1, 25, 18, 38, 1, 22]
+y_prediction = signs_classes
+
+print("actual results:", y_actual)
+print("model prediction:", y_prediction)
+
+prediction_statistics = np.zeros(2)
+for i in range(len(images)):
+    if y_actual[i] == y_prediction[i]:
+        prediction_statistics[0] += 1
+    else:
+        prediction_statistics[1] += 1
+
+lables =  str(prediction_statistics[0]),str(prediction_statistics[1])
+legend_lables = 'Good results','Bad results'
+
+plt.rcParams["figure.figsize"] = (6,6)
+plt.title("Prediction performance for the new images:")
+patches = plt.pie(prediction_statistics, labels = lables)
+plt.legend(patches, labels=legend_lables, loc="upper right")
+
+
+# ### Output Top 5 Softmax Probabilities For Each Image Found on the Web
+
+# For each of the new images, print out the model's softmax probabilities to show the **certainty** of the model's predictions (limit the output to the top 5 probabilities for each image). [`tf.nn.top_k`](https://www.tensorflow.org/versions/r0.12/api_docs/python/nn.html#top_k) could prove helpful here. 
+# 
+# The example below demonstrates how tf.nn.top_k can be used to find the top k predictions for each image.
+# 
+# `tf.nn.top_k` will return the values and indices (class ids) of the top k predictions. So if k=3, for each sign, it'll return the 3 largest probabilities (out of a possible 43) and the correspoding class ids.
+# 
+# Take this numpy array as an example. The values in the array represent predictions. The array contains softmax probabilities for five candidate images with six possible classes. `tk.nn.top_k` is used to choose the three classes with the highest probability:
+# 
+# ```
+# # (5, 6) array
+# a = np.array([[ 0.24879643,  0.07032244,  0.12641572,  0.34763842,  0.07893497,
+#          0.12789202],
+#        [ 0.28086119,  0.27569815,  0.08594638,  0.0178669 ,  0.18063401,
+#          0.15899337],
+#        [ 0.26076848,  0.23664738,  0.08020603,  0.07001922,  0.1134371 ,
+#          0.23892179],
+#        [ 0.11943333,  0.29198961,  0.02605103,  0.26234032,  0.1351348 ,
+#          0.16505091],
+#        [ 0.09561176,  0.34396535,  0.0643941 ,  0.16240774,  0.24206137,
+#          0.09155967]])
+# ```
+# 
+# Running it through `sess.run(tf.nn.top_k(tf.constant(a), k=3))` produces:
+# 
+# ```
+# TopKV2(values=array([[ 0.34763842,  0.24879643,  0.12789202],
+#        [ 0.28086119,  0.27569815,  0.18063401],
+#        [ 0.26076848,  0.23892179,  0.23664738],
+#        [ 0.29198961,  0.26234032,  0.16505091],
+#        [ 0.34396535,  0.24206137,  0.16240774]]), indices=array([[3, 0, 5],
+#        [0, 1, 4],
+#        [0, 5, 1],
+#        [1, 3, 5],
+#        [1, 4, 3]], dtype=int32))
+# ```
+# 
+# Looking just at the first row we get `[ 0.34763842,  0.24879643,  0.12789202]`, you can confirm these are the 3 largest probabilities in `a`. You'll also notice `[3, 0, 5]` are the corresponding indices.
+
+# In[63]:
+
+
+### Print out the top five softmax probabilities for the predictions on the German traffic sign images found on the web. 
+### Feel free to use as many code cells as needed.
+      
+with tf.Session() as sess:
+    sess = tf.get_default_session()
+    tf.train.Saver().restore(sess, tf.train.latest_checkpoint('.'))
+    prob = sess.run(tf.nn.softmax(logits), feed_dict={x: X_data})
+    top_5 = tf.nn.top_k(prob, k=5)
+    top_5_prob = sess.run(top_5)
+
+size= len(images)    
+plt.figure(figsize=(16, 21))
+for i in range(size):
+    plt.subplot(size, 2, 2*i +1)
+    plt.imshow(images_orig[i]) 
+    plt.title("image " + str(i))
+    plt.axis('off')
+    
+    plt.subplot(size, 2, 2*i +2)
+    plt.barh(np.arange(1, 6, 1), top_5_prob.values[i, :])
+    result=[signs[k] for k in top_5_prob.indices[i]]
+    plt.yticks(np.arange(1, 6, 1), result)
+plt.show()
+
+
+# For almost all the images the predictor was very certain with probability of more than 50%, even when the results were wrong.
+# 
+# I noticed that for some of the images - I got different predictions each time I ran the model (also with high probability on them) which is quite strange
+# 
+# For the images that were predict correctly we can observe probability of more than 90% which is preety satisfying.
+
+# ### Project Writeup
+# 
+# Once you have completed the code implementation, document your results in a project writeup using this [template](https://github.com/udacity/CarND-Traffic-Sign-Classifier-Project/blob/master/writeup_template.md) as a guide. The writeup can be in a markdown or pdf file. 
+
+# > **Note**: Once you have completed all of the code implementations and successfully answered each question above, you may finalize your work by exporting the iPython Notebook as an HTML document. You can do this by using the menu above and navigating to  \n",
+#     "**File -> Download as -> HTML (.html)**. Include the finished document along with this notebook as your submission.
+
+# ---
+# 
+# ## Step 4 (Optional): Visualize the Neural Network's State with Test Images
+# 
+#  This Section is not required to complete but acts as an additional excersise for understaning the output of a neural network's weights. While neural networks can be a great learning device they are often referred to as a black box. We can understand what the weights of a neural network look like better by plotting their feature maps. After successfully training your neural network you can see what it's feature maps look like by plotting the output of the network's weight layers in response to a test stimuli image. From these plotted feature maps, it's possible to see what characteristics of an image the network finds interesting. For a sign, maybe the inner network feature maps react with high activation to the sign's boundary outline or to the contrast in the sign's painted symbol.
+# 
+#  Provided for you below is the function code that allows you to get the visualization output of any tensorflow weight layer you want. The inputs to the function should be a stimuli image, one used during training or a new one you provided, and then the tensorflow variable name that represents the layer's state during the training process, for instance if you wanted to see what the [LeNet lab's](https://classroom.udacity.com/nanodegrees/nd013/parts/fbf77062-5703-404e-b60c-95b78b2f3f9e/modules/6df7ae49-c61c-4bb2-a23e-6527e69209ec/lessons/601ae704-1035-4287-8b11-e2c2716217ad/concepts/d4aca031-508f-4e0b-b493-e7b706120f81) feature maps looked like for it's second convolutional layer you could enter conv2 as the tf_activation variable.
+# 
+# For an example of what feature map outputs look like, check out NVIDIA's results in their paper [End-to-End Deep Learning for Self-Driving Cars](https://devblogs.nvidia.com/parallelforall/deep-learning-self-driving-cars/) in the section Visualization of internal CNN State. NVIDIA was able to show that their network's inner weights had high activations to road boundary lines by comparing feature maps from an image with a clear path to one without. Try experimenting with a similar test to show that your trained network's weights are looking for interesting features, whether it's looking at differences in feature maps from images with or without a sign, or even what feature maps look like in a trained network vs a completely untrained one on the same sign image.
+# 
+# <figure>
+#  <img src="readme_img/visualize_cnn.png" width="380" alt="Combined Image" />
+#  <figcaption>
+#  <p></p> 
+#  <p style="text-align: center;"> Your output should look something like this (above)</p> 
+#  </figcaption>
+# </figure>
+#  <p></p> 
+# 

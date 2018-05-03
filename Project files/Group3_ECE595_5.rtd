@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RTMapsDiagram version="4.3.3" EngineVersion="4.5" xmlns="http://schemas.intempora.com/RTMaps/2011/RTMapsFiles" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://schemas.intempora.com/RTMaps/2011/RTMapsFiles http://www.intempora.com/schemas/RTMaps/2011/RTMapsDiagram.xsd">
+  <RequiredPackages>
+    <File><![CDATA[C:/Program Files/Intempora/RTMaps 4/packages/rtmaps_python_v2/rtmaps_python_v2.pck]]><Relative><![CDATA[%RTMAPS_INSTDIR%/packages/rtmaps_python_v2/rtmaps_python_v2.pck]]></Relative></File>
+  </RequiredPackages>
+  <EngineProperties>
+    <Property LongName="Engine.startTimespeed" Type="1">1000</Property>
+    <Property LongName="Engine.startTime" Type="1">0</Property>
+    <Property LongName="Engine.session" Type="3"><![CDATA[unspecified]]></Property>
+    <Property LongName="Engine.recordingAtStart" Type="0">true</Property>
+    <Property LongName="Engine.recording" Type="0">true</Property>
+    <Property LongName="Engine.sequentialStart" Type="0">false</Property>
+    <Property LongName="Engine.shutdownTimeout" Type="1">10000000</Property>
+    <Property LongName="Engine.autoDetectStartTime" Type="0">true</Property>
+    <Property LongName="Engine.coreFunctionsToSaveInDiag" Type="4"><![CDATA[0|-1]]></Property>
+    <Property LongName="Engine.useUTCTimeReference" Type="0">false</Property>
+  </EngineProperties>
+  <ClocksManagement>
+    <Property LongName="ClocksManagement.activeClock" Type="4"><![CDATA[1|0|RTMaps_standard_clock]]></Property>
+  </ClocksManagement>
+  <Component InstanceName="python_v2_1" Model="python_v2" Version="1.4" x="280" y="120" z="0">
+    <Property LongName="python_v2_1.autoReloadSubModules" Type="0">true</Property>
+    <Property LongName="python_v2_1.pythonVersion" Type="4"><![CDATA[2|0|3.6|2.7]]></Property>
+    <Property LongName="python_v2_1.pythonInstallationFolder" Type="3" SubType="32"><![CDATA[C:/Anaconda/]]><Relative><![CDATA[%RTMAPS_DIAGRAMDIR%/../../../../Anaconda]]></Relative></Property>
+    <Property LongName="python_v2_1.pythonFilename" Type="3" SubType="80"><![CDATA[C:/Users/srvenkit/Desktop/RTMaps_project/final.py]]><Relative><![CDATA[%RTMAPS_DIAGRAMDIR%/final.py]]></Relative></Property>
+    <Property LongName="python_v2_1.pythonLogFile" Type="3" SubType="16"><![CDATA[C:/Users/resadmin1/RTMaps-4.0/rtmaps_python_log_python_v2_1.txt]]><Relative><![CDATA[%RTMAPS_DIAGRAMDIR%/../../../resadmin1/RTMaps-4.0/rtmaps_python_log_python_v2_1.txt]]></Relative></Property>
+    <Property LongName="python_v2_1.KeepPythonAliveAfterDeath" Type="0">false</Property>
+    <Property LongName="python_v2_1.verbose" Type="0">true</Property>
+    <Property LongName="python_v2_1.className" Type="3"><![CDATA[rtmaps_python]]></Property>
+    <Property LongName="python_v2_1.internalInputs" Type="3" SubType="128"><![CDATA[]]></Property>
+    <Property LongName="python_v2_1.internalOutputs" Type="3" SubType="128"><![CDATA[]]></Property>
+    <Property LongName="python_v2_1.internalProperties" Type="3" SubType="128"><![CDATA[]]></Property>
+    <Property LongName="python_v2_1.readingPolicy" Type="4"><![CDATA[4|3|Synchro|Reactive|Sampling|Triggered]]></Property>
+    <Property LongName="python_v2_1.memorySize" Type="1">10000000</Property>
+    <ReadOnlyProperty LongName="python_v2_1.pythonPID" Type="1">0</ReadOnlyProperty>
+    <Property LongName="python_v2_1.additionalEnvironmentVariables" Type="3"><![CDATA[]]></Property>
+    <Property LongName="python_v2_1.threaded" Type="0">true</Property>
+    <Property LongName="python_v2_1.priority" Type="1">128</Property>
+    <Property LongName="python_v2_1.autoStart" Type="0">true</Property>
+  </Component>
+  <RTBoardView ID="JavaStudio1.0"/>
+</RTMapsDiagram>
